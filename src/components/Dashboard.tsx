@@ -5,6 +5,7 @@ import { generateAssetTypeColors, filterAssets } from '../utils/assetUtils';
 import { SearchPanel } from './SearchPanel';
 import { StatisticsPanel } from './StatisticsPanel';
 import { AssetLegend } from './AssetLegend';
+import { AssetSelector } from './AssetSelector';
 import { GeospatialMap } from './GeospatialMap';
 import assetsData from '../data/equinor_assets_database.json';
 
@@ -13,6 +14,7 @@ export const Dashboard: React.FC = () => {
   const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [selectedAssetId, setSelectedAssetId] = useState('');
 
   const database = assetsData as AssetsDatabase;
   const assets = database.assets;
@@ -91,6 +93,7 @@ export const Dashboard: React.FC = () => {
             <GeospatialMap
               assets={filteredAssets}
               assetTypeColors={assetTypeColors}
+              selectedAssetId={selectedAssetId}
             />
           </div>
         </div>

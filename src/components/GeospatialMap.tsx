@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, ZoomControl, LayersControl } from 'react-leaflet';
+import { MapContainer, TileLayer, ZoomControl, LayersControl, useMap } from 'react-leaflet';
 import { Asset, MarkerColors } from '../types/assets';
 import { AssetMarker } from './AssetMarker';
 import 'leaflet/dist/leaflet.css';
@@ -7,11 +7,35 @@ import 'leaflet/dist/leaflet.css';
 interface GeospatialMapProps {
   assets: Asset[];
   assetTypeColors: MarkerColors;
+  selectedAssetId?: string;
 }
+
+const MapController: React.FC<{ selectedAssetId?: string; assets: Asset[] }> = ({ 
+  selectedAssetId, 
+  assets 
+}) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (selectedAssetId) {
+      const selectedAsset = assets.find(asset => asset.asset_id === selectedAssetId);
+      if (selectedAsset) {
+        map.setView(
+          [selectedAsset.location.coordinates.latitude, selectedAsset.location.coordinates.longitude],
+          8,
+          { animate: true, duration: 1 }
+        );
+      }
+    }
+  }, [selectedAssetId, assets, map]);
+
+  return null;
+};
 
 export const GeospatialMap: React.FC<GeospatialMapProps> = ({
   assets,
   assetTypeColors,
+  selectedAssetId,
 }) => {
   const [mapCenter] = useState<[number, number]>([60, 5]); // Center on Norway
   const [mapZoom] = useState<number>(4);
@@ -25,6 +49,7 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
         zoomControl={false}
       >
         <ZoomControl position="topright" />
+        <MapController selectedAssetId={selectedAssetId} assets={assets} />
         
         <LayersControl position="topleft">
           <LayersControl.BaseLayer checked name="ESRI Satellite">
