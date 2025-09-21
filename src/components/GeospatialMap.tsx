@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, ZoomControl, LayersControl } from 'react-leaflet';
+import { MapContainer, TileLayer, ZoomControl, LayersControl, useMapEvents } from 'react-leaflet';
 import { Asset, MarkerColors } from '../types/assets';
 import { AssetMarker } from './AssetMarker';
 import { AssetDetailPanel } from './AssetDetailPanel';
@@ -29,6 +29,18 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
     setSelectedAsset(null);
   };
 
+  // Component to handle map clicks (close detail panel when clicking on empty space)
+  const MapClickHandler = () => {
+    useMapEvents({
+      click: () => {
+        if (selectedAsset) {
+          setSelectedAsset(null);
+        }
+      },
+    });
+    return null;
+  };
+
   return (
     <div className="relative w-full h-full">
       <MapContainer
@@ -38,6 +50,7 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
         zoomControl={false}
       >
         <ZoomControl position="topright" />
+        <MapClickHandler />
         
         <LayersControl position="topleft">
           <LayersControl.BaseLayer checked name="ESRI Satellite">

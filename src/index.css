@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom styles for Leaflet markers */
+.custom-marker div:hover {
+  transform: scale(1.1);
+}
+
+/* Ensure popups don't interfere with our custom modal */
+.leaflet-popup {
+  display: none !important;
+}
