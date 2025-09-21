@@ -66,6 +66,8 @@ export const Dashboard: React.FC = () => {
               setSelectedCountry={setSelectedCountry}
               selectedType={selectedType}
               setSelectedType={setSelectedType}
+              selectedAsset={selectedAssetId}
+              setSelectedAsset={setSelectedAssetId}
               assets={assets}
               filteredAssets={filteredAssets}
             />

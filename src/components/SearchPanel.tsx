@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, MapPin, Factory, Filter } from 'lucide-react';
+import { Search, MapPin, Factory, Filter, Building } from 'lucide-react';
 import { Asset } from '../types/assets';
 
 interface SearchPanelProps {
@@ -9,6 +9,8 @@ interface SearchPanelProps {
   setSelectedCountry: (country: string) => void;
   selectedType: string;
   setSelectedType: (type: string) => void;
+  selectedAsset: string;
+  setSelectedAsset: (assetId: string) => void;
   assets: Asset[];
   filteredAssets: Asset[];
 }
@@ -20,11 +22,16 @@ export const SearchPanel: React.FC<SearchPanelProps> = ({
   setSelectedCountry,
   selectedType,
   setSelectedType,
+  selectedAsset,
+  setSelectedAsset,
   assets,
   filteredAssets,
 }) => {
   const countries = [...new Set(assets.map(asset => asset.location.country))].sort();
   const assetTypes = [...new Set(assets.map(asset => asset.basic_info.type))].sort();
+  const sortedAssets = [...assets].sort((a, b) => 
+    a.basic_info.name.localeCompare(b.basic_info.name)
+  );
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -61,6 +68,23 @@ export const SearchPanel: React.FC<SearchPanelProps> = ({
           </select>
         </div>
 
+        {/* All Assets Dropdown */}
+        <div className="relative">
+          <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <select
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
+            value={selectedAsset}
+            onChange={(e) => setSelectedAsset(e.target.value)}
+          >
+            <option value="">All Assets</option>
+            {sortedAssets.map(asset => (
+              <option key={asset.asset_id} value={asset.asset_id}>
+                {asset.basic_info.name} ({asset.basic_info.type}) - {asset.location.country}
+              </option>
+            ))}
+          </select>
+        </div>
+
         {/* Asset Type Filter */}
         <div className="relative">
           <Factory className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -80,6 +104,13 @@ export const SearchPanel: React.FC<SearchPanelProps> = ({
         <div className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3">
           Showing <span className="font-semibold text-blue-600">{filteredAssets.length}</span> of{' '}
           <span className="font-semibold">{assets.length}</span> assets
+          {selectedAsset && (
+            <div className="mt-1 text-blue-600">
+              <span className="font-medium">Selected:</span> {
+                assets.find(a => a.asset_id === selectedAsset)?.basic_info.name
+              }
+            </div>
+          )}
         </div>
       </div>
     </div>
