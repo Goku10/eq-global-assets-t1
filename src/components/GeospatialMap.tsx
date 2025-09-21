@@ -1,45 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, ZoomControl, LayersControl, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, ZoomControl, LayersControl } from 'react-leaflet';
 import { Asset, MarkerColors } from '../types/assets';
 import { AssetMarker } from './AssetMarker';
-import { AssetDetailPanel } from './AssetDetailPanel';
 import 'leaflet/dist/leaflet.css';
 
 interface GeospatialMapProps {
   assets: Asset[];
   assetTypeColors: MarkerColors;
-  selectedAsset: Asset | null;
-  setSelectedAsset: (asset: Asset | null) => void;
 }
 
 export const GeospatialMap: React.FC<GeospatialMapProps> = ({
   assets,
   assetTypeColors,
-  selectedAsset,
-  setSelectedAsset,
 }) => {
   const [mapCenter] = useState<[number, number]>([60, 5]); // Center on Norway
   const [mapZoom] = useState<number>(4);
-
-  const handleAssetClick = (asset: Asset) => {
-    setSelectedAsset(asset);
-  };
-
-  const handleCloseDetail = () => {
-    setSelectedAsset(null);
-  };
-
-  // Component to handle map clicks (close detail panel when clicking on empty space)
-  const MapClickHandler = () => {
-    useMapEvents({
-      click: () => {
-        if (selectedAsset) {
-          setSelectedAsset(null);
-        }
-      },
-    });
-    return null;
-  };
 
   return (
     <div className="relative w-full h-full">
@@ -50,7 +25,6 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
         zoomControl={false}
       >
         <ZoomControl position="topright" />
-        <MapClickHandler />
         
         <LayersControl position="topleft">
           <LayersControl.BaseLayer checked name="ESRI Satellite">
@@ -91,18 +65,9 @@ export const GeospatialMap: React.FC<GeospatialMapProps> = ({
             key={asset.asset_id}
             asset={asset}
             color={assetTypeColors[asset.basic_info.type] || '#666666'}
-            onAssetClick={handleAssetClick}
           />
         ))}
       </MapContainer>
-
-      {selectedAsset && (
-        <AssetDetailPanel
-          asset={selectedAsset}
-          onClose={handleCloseDetail}
-          assetColor={assetTypeColors[selectedAsset.basic_info.type] || '#666666'}
-        />
-      )}
     </div>
   );
 };

@@ -12,7 +12,6 @@ export const Dashboard: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedType, setSelectedType] = useState('');
-  const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const database = assetsData as AssetsDatabase;
@@ -92,8 +91,6 @@ export const Dashboard: React.FC = () => {
             <GeospatialMap
               assets={filteredAssets}
               assetTypeColors={assetTypeColors}
-              selectedAsset={selectedAsset}
-              setSelectedAsset={setSelectedAsset}
             />
           </div>
         </div>
